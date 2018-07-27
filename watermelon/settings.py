@@ -27,29 +27,32 @@ DEBUG = True
 
 ALLOWED_HOSTS = [ '*' ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
-    'streams.apps.StreamsConfig',
-    'artists.apps.ArtistsConfig',
-    'songs.apps.SongsConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'streams.apps.StreamsConfig',
+    'artists.apps.ArtistsConfig',
+    'songs.apps.SongsConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'watermelon.urls'
@@ -77,17 +80,9 @@ WSGI_APPLICATION = 'watermelon.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-    'sqlite3': {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql', 
-        'NAME': 'watermelon',
-        'USER': 'wm_user',
-        'PASSWORD': 'wm_password',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '',
     }
 }
 
@@ -129,3 +124,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 25
+}
+
+CORS_ORIGIN_ALLOW_ALL = True
