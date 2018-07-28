@@ -1,3 +1,5 @@
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -7,3 +9,6 @@ DATABASES = {
         'PORT': 5432,
     }
 }
+
+MQTT_PASSWORD = os.environ.get("mqtt_password")
+MQTT_HOST = "mqtt"

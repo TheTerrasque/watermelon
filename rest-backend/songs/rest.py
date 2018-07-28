@@ -7,6 +7,8 @@ from .permissions import EditableByCheck
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from mqtt_connection import mqtt_wrap
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -24,17 +26,22 @@ class SongSerializer(serializers.HyperlinkedModelSerializer):
             "description", "added", "status", "file", "last_queued",
             "can_be_queued")
 
+
 class PlatformSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Platform
-        fields = ("name", "description")
+        fields = ("id", "name", "description")
 
 class SongStatusSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.SongStatus
         fields = ("id", "name", "visible")
+
+mqtt_wrap.S[models.Song] = SongSerializer
+mqtt_wrap.S[models.SongStatus] = SongStatusSerializer
+mqtt_wrap.S[models.Platform] = PlatformSerializer
 
 class SongStatusViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.SongStatus.objects.all()

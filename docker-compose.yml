@@ -4,13 +4,22 @@ services:
   db:
     image: postgres
     hostname: db
-  web:
-    build: .
-    command: /bin/bash /app/docker/start.sh
+  mqtt:
+    build: 
+      context: mqtt
+      args:
+        mqtt_password: "${MQTT_PASSWORD:-moo}"
+    hostname: mqtt
+    ports:
+      - "1883:1883"
+  rest:
+    build: rest-backend
     volumes:
       - .:/data
     ports:
-      - "8000:8000"
-      - "1883:1883"
+      - "80:8000"
     depends_on:
       - db
+      - mqtt
+    environment:
+      mqtt_password: "${MQTT_PASSWORD:-moo}"

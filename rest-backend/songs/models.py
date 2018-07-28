@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+
+
 class Platform(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -38,3 +40,4 @@ class Song(models.Model):
 
     def __str__(self):
         return self.name
+
