@@ -1,0 +1,3 @@
+[submodule "streamer/demosauce"]
+	path = streamer/demosauce
+	url = https://gitlab.com/maep/demosauce.git
