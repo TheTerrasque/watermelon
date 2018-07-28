@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b0j5g!a&zp(nq)9y_bz!2dg=)d^ytsvj&i=ehl@240i@&((#04'
+SECRET_KEY = '_changeme_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -136,3 +136,8 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+try:
+    from .settings_local import *
+except ImportError:
+    print("  TIP: For custom settings create a settings_local.py file in same folder as settings.py")
