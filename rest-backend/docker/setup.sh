@@ -8,3 +8,5 @@ apt-get install -y pwgen
 cd /app/rest-backend
 pip install -r requirements.txt
 cp /app/rest-backend/docker/settings_local.py /app/rest-backend/watermelon/
+
+head -c 128 /dev/urandom | sha256sum | base64 | head -c 32 > /app/rest_secret

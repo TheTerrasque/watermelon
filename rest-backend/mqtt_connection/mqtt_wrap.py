@@ -5,6 +5,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.renderers import JSONRenderer
 
+from django.utils import timezone
+
 S = {}
 
 def publish(topic, message, qos = 0, retain = False):
@@ -14,7 +16,6 @@ def publish(topic, message, qos = 0, retain = False):
         "username": settings.MQTT_USER,
         "password": settings.MQTT_PASSWORD
     }
-    print(a)
     mqttpublish.single(topic, message, hostname=settings.MQTT_HOST, auth = a, qos = qos, retain = retain)
     return True
 
@@ -31,4 +32,4 @@ def my_handler(sender, **kwargs):
         }
         json = JSONRenderer().render(d)
         t = sender.__name__
-        mqtt_wrap.publish("updates/%s" % t, json)
+        publish("updates/%s" % t, json)

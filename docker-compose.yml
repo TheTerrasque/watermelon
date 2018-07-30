@@ -7,24 +7,27 @@ services:
   mqtt:
     build: 
       context: mqtt
-      args:
-        mqtt_password: "${MQTT_PASSWORD:-moo}"
     hostname: mqtt
+    volumes:
+      - datastore:/data
     ports:
       - "1883:1883"
   rest:
     build: rest-backend
     volumes:
-      - .:/data
+      - datastore:/data
     ports:
       - "80:8000"
     depends_on:
       - db
       - mqtt
-    environment:
-      mqtt_password: "${MQTT_PASSWORD:-moo}"
   streamer:
     build: streamer
     hostname: streamer
+    volumes:
+      - datastore:/data
     depends_on:
       - mqtt
+
+volumes:
+  datastore:
