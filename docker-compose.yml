@@ -4,6 +4,8 @@ services:
   db:
     image: postgres
     hostname: db
+    volumes:
+      - dbstore:/var/lib/postgresql/data
   mqtt:
     build: 
       context: mqtt
@@ -31,3 +33,4 @@ services:
 
 volumes:
   datastore:
+  dbstore:

@@ -1,7 +1,9 @@
 #!/usr/bin/bash
 cd /app/rest-backend
 
-sleep 1 #To let the db start up fully
+mkdir -p /data/rest
+
+sleep 3 #To let the db start up fully
 
 ## Setup that needs the database to be running
 # Migrate databae model
