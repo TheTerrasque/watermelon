@@ -23,3 +23,8 @@ services:
       - mqtt
     environment:
       mqtt_password: "${MQTT_PASSWORD:-moo}"
+  streamer:
+    build: streamer
+    hostname: streamer
+    depends_on:
+      - mqtt
