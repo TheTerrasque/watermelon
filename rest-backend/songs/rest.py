@@ -9,6 +9,17 @@ from rest_framework.response import Response
 
 from mqtt_connection import mqtt_wrap
 
+class RelativeUrlModelSerializer():
+    def get_serializer_context(self):
+        """
+        Extra context provided to the serializer class.
+        """
+        return {
+            'request': None,
+            'format': self.format_kwarg,
+            'view': self
+        }
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -16,9 +27,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 class SongSerializer(serializers.HyperlinkedModelSerializer):
     uploaded_by = serializers.ReadOnlyField(source='uploaded_by.username')
-    status = serializers.ReadOnlyField()
-    last_queued = serializers.ReadOnlyField()
-    file = serializers.FileField(use_url = False)
+    #status = serializers.ReadOnlyField()
+    #last_queued = serializers.ReadOnlyField()
+    #file = serializers.FileField(use_url = False)
     
     class Meta:
         model = models.Song
@@ -43,15 +54,15 @@ mqtt_wrap.S[models.Song] = SongSerializer
 mqtt_wrap.S[models.SongStatus] = SongStatusSerializer
 mqtt_wrap.S[models.Platform] = PlatformSerializer
 
-class SongStatusViewSet(viewsets.ReadOnlyModelViewSet):
+class SongStatusViewSet(RelativeUrlModelSerializer,viewsets.ReadOnlyModelViewSet):
     queryset = models.SongStatus.objects.all()
     serializer_class = SongStatusSerializer
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(RelativeUrlModelSerializer, viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class SongViewSet(viewsets.ModelViewSet):
+class SongViewSet(RelativeUrlModelSerializer, viewsets.ModelViewSet):
     queryset = models.Song.objects.all()
     serializer_class = SongSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -68,6 +79,6 @@ class SongViewSet(viewsets.ModelViewSet):
         song = self.get_object()
         return Response({"queueable": song.can_be_queued()})
 
-class PlatformViewSet(viewsets.ReadOnlyModelViewSet):
+class PlatformViewSet(RelativeUrlModelSerializer, viewsets.ReadOnlyModelViewSet):
     queryset = models.Platform.objects.all()
     serializer_class = PlatformSerializer

@@ -25,7 +25,7 @@ def publish(topic, message, qos = 0, retain = False):
 def my_handler(sender, **kwargs):
     if sender in S:
         i = kwargs["instance"]
-        r = S[sender](i)
+        r = S[sender](i, context={'request': None})
         d = {
             "instance": r.data,
             "new" : kwargs["created"],

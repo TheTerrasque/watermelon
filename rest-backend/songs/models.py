@@ -28,9 +28,19 @@ class Song(models.Model):
     status = models.ForeignKey(SongStatus, on_delete = models.CASCADE)
 
     last_queued = models.DateTimeField(blank=True, null=True)
+    last_played = models.DateTimeField(blank=True, null=True)
+    replay_gain = models.IntegerField(default=0)
 
-    # The uploaded file.
+        # The uploaded file.
     file = models.FileField(upload_to='songsdata/%Y/%m/%d/')
+    
+    def get_streamer_data(self):
+        return {
+            'path': self.file.path,
+            'artist': self.artist.name,
+            'title': self.name,
+            'gain': str(self.replay_gain),
+        }
 
     def can_be_queued(self):
         return not self.last_queued or self.last_queued < timezone.now() - timezone.timedelta(hours=12)
@@ -41,3 +51,11 @@ class Song(models.Model):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def get_next_queued(cls):
+        if cls.objects.count():
+            song = cls.objects.order_by('?').first()
+            song.last_played = timezone.now()
+            song.save()
+            return song.get_streamer_data()
+        return None
