@@ -6,6 +6,7 @@ services:
     hostname: db
     volumes:
       - dbstore:/var/lib/postgresql/data
+
   mqtt:
     build: 
       context: mqtt
@@ -14,6 +15,7 @@ services:
       - datastore:/data
     ports:
       - "1883:1883"
+
   rest:
     build: rest-backend
     volumes:
@@ -23,6 +25,17 @@ services:
     depends_on:
       - db
       - mqtt
+
+  streamcontroller:
+    build: rest-backend
+    command: python manage.py streamcontroller
+    volumes:
+      - datastore:/data
+    depends_on:
+      - db
+      - mqtt
+      - rest
+
   streamer:
     build: streamer
     hostname: streamer
@@ -30,6 +43,25 @@ services:
       - datastore:/data
     depends_on:
       - mqtt
+      - streamerbridge
+      - icecast
+
+  streamerbridge:
+    build: streamer
+    command: python /app/streamer/docker/streamer_mqtt_bridge.py
+    volumes:
+      - datastore:/data
+    depends_on:
+      - mqtt
+      - streamcontroller
+
+  icecast:
+    build: icecast
+    hostname: icecast
+    volumes:
+      - datastore:/data
+    ports:
+      - "8000:8000"     
 
 volumes:
   datastore:

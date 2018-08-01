@@ -1,5 +1,7 @@
 from django.conf import settings
+
 import paho.mqtt.publish as mqttpublish
+import paho.mqtt.client as mqtt
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -33,3 +35,12 @@ def my_handler(sender, **kwargs):
         json = JSONRenderer().render(d)
         t = sender.__name__
         publish("updates/%s" % t, json)
+
+
+def getclient(on_connect=None, on_message = None, clientid=''):
+    client = mqtt.Client(clientid)
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
+    client.connect(settings.MQTT_HOST)
+    return client
