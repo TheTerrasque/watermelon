@@ -28,13 +28,21 @@ services:
 
   streamcontroller:
     build: rest-backend
-    command: python manage.py streamcontroller
+    command: python manage.py mqttcomm
     volumes:
       - datastore:/data
     depends_on:
       - db
       - mqtt
       - rest
+
+  dscan:
+    build: streamer
+    volumes:
+      - datastore:/data
+    depends_on:
+      - mqtt    
+    command: python /app/streamer/docker/dscan_mqtt_bridge.py
 
   streamer:
     build: streamer

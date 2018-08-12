@@ -40,13 +40,13 @@ def sendreceive(message):
 
     def on_connect(client, userdata, flags, rc):
         client.subscribe("streamer/answer")
-        client.publish("streamer/query", message)
-        print("Command sent")
+        #client.publish("streamer/query", message)
+        #print("Command sent")
 
     def on_message(client, userdata, msg):
-        print("msg received", msg)
+        #print("msg received", msg)
         returndata['data'] = json.loads(msg.payload)
-        print("Got return data")
+        #print("Got return data")
         
     client.on_connect = on_connect
     client.on_message = on_message

@@ -29,14 +29,16 @@ class Song(models.Model):
 
     last_queued = models.DateTimeField(blank=True, null=True)
     last_played = models.DateTimeField(blank=True, null=True)
-    replay_gain = models.IntegerField(default=0)
-
+    replay_gain = models.FloatField(default=0)
+    length = models.FloatField(blank=True, null=True)
+    samplerate = models.IntegerField(blank=True, null=True)
+    songtype = models.CharField(blank=True, max_length=20)
         # The uploaded file.
     file = models.FileField(upload_to='songsdata/%Y/%m/%d/')
     
     def get_streamer_data(self):
         return {
-            'path': self.file.path,
+            'path': self.file.path, #pylint: disable=E1101
             'artist': self.artist.name,
             'title': self.name,
             'gain': str(self.replay_gain),
@@ -53,8 +55,8 @@ class Song(models.Model):
 
     @classmethod
     def get_next_queued(cls):
-        if cls.objects.count():
-            song = cls.objects.order_by('?').first()
+        if cls.objects.count(): #pylint: disable=E1101
+            song = cls.objects.order_by('?').first() #pylint: disable=E1101
             song.last_played = timezone.now()
             song.save()
             return song.get_streamer_data()
